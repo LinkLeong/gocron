@@ -1,0 +1,89 @@
+# This is an example .goreleaser.yml file with some sensible defaults.
+# Make sure to check the documentation at https://goreleaser.com
+project_name: casaos-cron
+before:
+  hooks:
+    - go generate
+    - go run github.com/google/go-licenses@latest check . --disallowed_types=restricted
+    - go mod tidy
+    - go test -v ./...
+builds:
+  - id: casaos-cron-amd64
+    binary: build/sysroot/usr/bin/casaos-cron
+    env:
+      - CC=x86_64-linux-gnu-gcc
+    ldflags:
+      - -s
+      - -w
+      - -extldflags "-static"
+    tags:
+      - musl
+      - netgo
+      - osusergo
+    goos:
+      - linux
+    goarch:
+      - amd64
+  - id: casaos-cron-arm64
+    binary: build/sysroot/usr/bin/casaos-cron
+    env:
+      - CC=aarch64-linux-gnu-gcc
+    ldflags:
+      - -s
+      - -w
+      - -extldflags "-static"
+    tags:
+      - musl
+      - netgo
+      - osusergo
+    goos:
+      - linux
+    goarch:
+      - arm64
+  - id: casaos-cron-arm-7
+    binary: build/sysroot/usr/bin/casaos-cron
+    env:
+      - CC=arm-linux-gnueabihf-gcc
+    ldflags:
+      - -s
+      - -w
+      - -extldflags "-static"
+    tags:
+      - musl
+      - netgo
+      - osusergo
+    goos:
+      - linux
+    goarch:
+      - arm
+    goarm:
+      - "7"
+archives:
+  - name_template: "{{ .Os }}-{{ .Arch }}-{{ .ProjectName }}-v{{ .Version }}"
+    id: casaos-cron
+    builds:
+      - casaos-cron-amd64
+      - casaos-cron-arm64
+      - casaos-cron-arm-7
+    replacements:
+      arm: arm-7
+    files:
+      - build/**/*
+checksum:
+  name_template: "checksums.txt"
+snapshot:
+  name_template: "{{ incpatch .Version }}"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+release:
+  github:
+    owner: IceWhaleTech
+    name: CasaOS-Cron
+  draft: true
+  prerelease: auto
+  mode: replace
+  name_template: "v{{ .Version }}"

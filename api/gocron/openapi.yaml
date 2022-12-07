@@ -1,0 +1,333 @@
+openapi: 3.0.3
+info:
+  version: 1.0.0
+  title: Example.com
+  termsOfService: "https://example.com/terms/"
+  contact:
+    email: contact@example.com
+    url: "http://example.com/contact"
+  license:
+    name: Apache 2.0
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+  x-logo:
+    url: "https://redocly.github.io/openapi-template/logo.png"
+  description: |
+    This is an **example** API to demonstrate features of the OpenAPI
+    specification.
+
+    # Introduction
+
+    This API definition is intended to to be a good starting point for
+    describing your API in [OpenAPI/Swaggerformat](https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md).
+    It also demonstrates features of the
+    [create-openapi-repo](https://github.com/Redocly/create-openapi-repo) tool and
+    the [Redoc](https://github.com/Redocly/Redoc) documentation engine. Beyond
+    the standard OpenAPI syntax, we use a few [vendor extensions](https://github.com/Redocly/Redoc/blob/master/docs/redoc-vendor-extensions.md).
+
+    # OpenAPI Specification
+
+    The goal of The OpenAPI Specification is to define a standard,
+    language-agnostic interface to REST APIs which
+    allows both humans and computers to discover and understand the capabilities
+    of the service without access to source
+    code, documentation, or through network traffic inspection. When properly
+    defined via OpenAPI, a consumer can understand and interact with the remote service with a minimal amount of implementation logic. Similar to what
+    interfaces have done for lower-level programming, OpenAPI removes the
+    guesswork in calling the service.
+tags:
+  - name: Cron
+    description: |
+      The cron API is used to manage cron jobs.
+  - name: Logs
+    description: |
+      The logs API is used to manage cron job logs.
+  - name: Notify
+    description: |
+      The notify API is used to manage cron job notifications.
+servers:
+  - url: "http://127.0.0.1:8008/v1"
+# security:
+#   - access_token: []
+paths:
+  /cron:
+    get:
+      tags:
+        - Cron
+        - Logs
+        - Notify
+      summary: Get all cron jobs
+      description: |
+        Get all cron jobs.
+      operationId: getCronJobs
+      security: []
+      responses:
+        "200":
+          $ref: "#/components/responses/GetCronJobsOK"
+        "403":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/BadRequest"
+    post:
+      tags:
+        - Cron
+      summary: Create a cron job
+      description: |
+        Create a cron job.
+      operationId: createCronJob
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Cron"
+        required: true
+      responses:
+        "200":
+          $ref: "#/components/responses/OKRequest"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/BadRequest"
+  /cron/{id}:
+    delete:
+      tags:
+        - Cron
+      summary: Delete a cron job
+      description: |
+        Delete a cron job.
+      operationId: deleteCronJob
+      parameters:
+        - name: id
+          in: path
+          description: Cron job ID
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          $ref: "#/components/responses/OKRequest"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/BadRequest"
+  /log/{id}:
+    get:
+      tags:
+        - Logs
+      summary: Get log by id
+      operationId: getLogById
+      parameters:
+        - name: id
+          in: path
+          description: Log ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+            example: 1
+      responses:
+        "200":
+          $ref: "#/components/responses/GetLogByIdOK"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/BadRequest"
+  /notify:
+    get:
+      tags:
+        - Notify
+      summary: Get all notifications
+      description: |
+        Get all notifications.
+      operationId: getNotifications
+      responses:
+        "200":
+          $ref: "#/components/responses/GetNotificationsOK"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/BadRequest"
+    post:
+      tags:
+        - Notify
+      summary: Create a notification
+      operationId: createNotification
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Notification"
+      responses:
+        "200":
+          $ref: "#/components/responses/OKRequest"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/BadRequest"
+  /notify/{id}:
+    delete:
+      tags:
+        - Notify
+      summary: Delete a notification
+      operationId: deleteNotification
+      parameters:
+        - name: id
+          in: path
+          description: Notification ID
+          required: true
+          schema:
+            type: integer
+            example: 1
+      responses:
+        "200":
+          $ref: "#/components/responses/OKRequest"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/BadRequest"
+
+components:
+  securitySchemes:
+    access_token:
+      type: apiKey
+      in: header
+      name: Authorization
+  responses:
+    GetNotificationsOK:
+      description: OK
+      content:
+        application/json:
+          schema:
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Notification"
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/Error"
+    OKRequest:
+      description: OK
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/OK"
+    GetCronJobsOK:
+      description: Success
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: "#/components/schemas/OK"
+              - type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Cron"
+
+    GetLogByIdOK:
+      description: Success
+      content:
+        application/json:
+          schema:
+            properties:
+              data:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Log"
+  schemas:
+    OK:
+      type: object
+      properties:
+        message:
+          type: string
+          example: OK
+    Error:
+      required:
+        - message
+      properties:
+        message:
+          type: string
+          example: Not found
+    Cron:
+      type: object
+      required:
+        - name
+        - command
+        - time
+        - notify
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "My cron job"
+        command:
+          type: string
+          example: "date"
+        time:
+          type: string
+          example: "0/20 * * * * *"
+        notify:
+          type: integer
+          example: 1
+
+    Log:
+      type: object
+      required:
+        - name
+        - cron_id
+        - log
+      properties:
+        id:
+          type: integer
+          example: 1
+          format: int
+          readOnly: true
+        name:
+          type: string
+          example: "test"
+        cron_id:
+          type: string
+          example: 1
+        log:
+          type: string
+          example: "Hello world"
+        time:
+          type: string
+          example: "1669690727"
+    Notification:
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 1
+        name:
+          type: string
+          example: "My notification"
+        type:
+          type: string
+          example: "feishu"
+          enum:
+            - feishu
+            - telegram
+        title:
+          type: string
+          example: "My notification"
+        content:
+          type: string
+          example: "Hello world"
+        url:
+          type: string
+          example: "https://open.feishu.cn/open-apis/bot/v2/hook/xxxx"
