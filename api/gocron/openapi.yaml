@@ -53,8 +53,6 @@ paths:
     get:
       tags:
         - Cron
-        - Logs
-        - Notify
       summary: Get all cron jobs
       description: |
         Get all cron jobs.
