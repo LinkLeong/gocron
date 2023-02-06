@@ -13,7 +13,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/IceWhaleTech/CasaOS/pkg/utils/loger"
+	"github.com/IceWhaleTech/CasaOS-Common/utils/logger"
 	"go.uber.org/zap"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -45,7 +45,7 @@ func GetDb() *gorm.DB {
 	c.SetMaxOpenConns(100)
 	c.SetConnMaxIdleTime(time.Second * 1000)
 	if err != nil {
-		loger.Error("sqlite connect error", zap.Any("db connect error", err))
+		logger.Error("sqlite connect error", zap.Any("db connect error", err))
 		panic("sqlite connect error")
 		return nil
 	}
@@ -53,7 +53,7 @@ func GetDb() *gorm.DB {
 
 	//	err = db.AutoMigrate(&model2.AppNotify{}, &model2.AppListDBModel{}, model2.SharesDBModel{}, model2.ConnectionsDBModel{})
 	if err != nil {
-		loger.Error("check or create db error", zap.Any("error", err))
+		logger.Error("check or create db error", zap.Any("error", err))
 	}
 	return db
 }

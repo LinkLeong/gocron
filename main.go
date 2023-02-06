@@ -17,12 +17,11 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/IceWhaleTech/CasaOS/pkg/utils/loger"
 	"github.com/robfig/cron/v3"
 )
 
 func init() {
-	loger.LogInit()
+	// logger.LogInit()
 	repository.MyRepository = repository.NewRepository()
 	service.MyService = service.NewService(repository.MyRepository, cron.New(cron.WithSeconds()))
 }
