@@ -7,6 +7,7 @@ require (
 	github.com/deepmap/oapi-codegen v1.12.3
 	github.com/getkin/kin-openapi v0.109.0
 	github.com/glebarez/sqlite v1.5.0
+	github.com/go-resty/resty/v2 v2.7.0
 	github.com/gorilla/mux v1.8.0
 	github.com/labstack/echo/v4 v4.9.1
 	github.com/robfig/cron/v3 v3.0.1

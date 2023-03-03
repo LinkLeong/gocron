@@ -1,0 +1,30 @@
+// 初始化任务, 从数据库取出所有任务, 添加到定时任务并运行
+func (task Task) Initialize() {
+	serviceCron = cron.New()
+	serviceCron.Start()
+	concurrencyQueue = ConcurrencyQueue{queue: make(chan struct{}, app.Setting.ConcurrencyQueue)}
+	taskCount = TaskCount{sync.WaitGroup{}, make(chan struct{})}
+	go taskCount.Wait()
+
+	logger.Info("开始初始化定时任务")
+	taskModel := new(models.Task)
+	taskNum := 0
+	page := 1
+	pageSize := 1000
+	maxPage := 1000
+	for page < maxPage {
+		taskList, err := taskModel.ActiveList(page, pageSize)
+		if err != nil {
+			logger.Fatalf("定时任务初始化#获取任务列表错误: %s", err)
+		}
+		if len(taskList) == 0 {
+			break
+		}
+		for _, item := range taskList {
+			task.Add(item)
+			taskNum++
+		}
+		page++
+	}
+	logger.Infof("定时任务初始化完成, 共%d个定时任务添加到调度器", taskNum)
+}

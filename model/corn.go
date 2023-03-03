@@ -15,6 +15,7 @@ type Corns struct {
 	Command string `json:"command"` //可以是url,也可以是shell脚本的地址
 	CronID  int    `json:"cron_id"` //cron的id
 	Status  int    `json:"status"`  //0:未执行
+	Enable  string `json:"enable"`  //是否启用
 	Notify  int    `json:"notify"`  //0:不通知,(通知表的id)
 	Tags    string `json:"tags"`    //标签
 	Time    string `json:"time"`    //执行时间

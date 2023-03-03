@@ -10,6 +10,9 @@ package tools
 
 import (
 	"encoding/json"
+	"fmt"
+
+	"github.com/go-resty/resty/v2"
 )
 
 type FeishuModel struct {
@@ -21,6 +24,7 @@ type ContentModel struct {
 }
 
 func SendNotify(url string, t string, message string) ([]byte, error) {
+	client := resty.New()
 	if t == "feishu" {
 		data := FeishuModel{
 			MsgType: "text",
@@ -35,6 +39,34 @@ func SendNotify(url string, t string, message string) ([]byte, error) {
 		header := make(map[string]string)
 		header["Content-Type"] = "application/json"
 		return HttpDo("POST", url, header, payloadBytes)
+	} else if t == "serverchan" {
+		resp, err := client.R().
+			SetHeader("Content-Type", "application/json").
+			SetBody(map[string]string{
+				"title": "testSeverChan",
+				"desp":  message,
+			}).
+			Post(url)
+		fmt.Println(resp.StatusCode())
+		fmt.Println(resp.String())
+		fmt.Println(err)
+		return resp.Body(), err
+	} else if t == "pushplus" {
+		resp, err := client.R().
+			SetHeader("Content-Type", "application/json").
+			SetBody(map[string]string{
+				"topic":   "123",
+				"token":   "ae4f0531a0c2491b9be7c38a0f354150",
+				"title":   "12",
+				"content": message,
+				// "template": "html",
+				"channel": "wechat",
+			}).
+			Post(url)
+		fmt.Println(resp.StatusCode())
+		fmt.Println(resp.String())
+		fmt.Println(err)
+		return resp.Body(), err
 	}
 	return nil, nil
 }

@@ -24,7 +24,12 @@ func init() {
 	// logger.LogInit()
 	repository.MyRepository = repository.NewRepository()
 	service.MyService = service.NewService(repository.MyRepository, cron.New(cron.WithSeconds()))
+	// 读取数据库的任务队列,重新加入cron.Addfunc
+	// 查询
+	// 再通过查询数据库初始化定时任务
+	service.MyService.Cron().GetCronByDB()
 }
+
 func main() {
 	r := route.InitV1Router()
 	srv := &http.Server{

@@ -78,7 +78,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Cron"
+              $ref: "#/components/schemas/Cron1"
         required: true
       responses:
         "200":
@@ -103,6 +103,36 @@ paths:
           schema:
             type: integer
             example: 1
+      responses:
+        "200":
+          $ref: "#/components/responses/OKRequest"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/BadRequest"
+  /cron/{id}/status:
+    put:
+      tags:
+        - Cron
+      summary: Update cron job status
+      description: |
+        Update cron job status.
+      operationId: updateCronJobStatus
+      parameters:
+        - name: id
+          in: path
+          description: Cron job ID
+          required: true
+          schema:
+            type: integer
+            example: 1
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CronStatus"
       responses:
         "200":
           $ref: "#/components/responses/OKRequest"
@@ -257,17 +287,14 @@ components:
         message:
           type: string
           example: Not found
-    Cron:
-      type: object
+    Cron1:
       required:
         - name
         - command
         - time
         - notify
       properties:
-        id:
-          type: integer
-          example: 1
+
         name:
           type: string
           example: "My cron job"
@@ -280,7 +307,31 @@ components:
         notify:
           type: integer
           example: 1
-
+    Cron:
+      allOf:
+      - $ref: '#/components/schemas/Cron1'
+      - type: object
+        required:
+          - name
+          - command
+          - time
+          - notify
+        properties:
+          id:
+            type: integer
+            example: 1
+        
+    CronStatus:
+      type: object
+      required:
+        - enable
+      properties:
+        enable:
+          type: string
+          example: "enable"
+          enum:
+            - enable
+            - unable
     Log:
       type: object
       required:

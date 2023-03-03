@@ -23,6 +23,8 @@ type CronRepository interface {
 	GetJobs() ([]model.Corns, error)
 	GetCronJobsByCronId(cron_id int) ([]model.CornsLog, error)
 	GetJobLog(id string) ([]model.CornsLog, error)
+	UpdateStatus(id, enable string) error
+	UpdateCronIdById(id, cronid string) error
 }
 
 type cronStruct struct {
@@ -55,7 +57,6 @@ func (c *cronStruct) GetCronJobsByCronId(cron_id int) ([]model.CornsLog, error) 
 	return list, tx.Error
 }
 
-//
 func (c *cronStruct) GetJobs() ([]model.Corns, error) {
 	var list []model.Corns
 	tx := c.db.Find(&list)
@@ -63,6 +64,16 @@ func (c *cronStruct) GetJobs() ([]model.Corns, error) {
 }
 
 func (c *cronStruct) UpdateJob() error {
+	return nil
+}
+
+func (c *cronStruct) UpdateStatus(id, enable string) error {
+	c.db.Model(&model.Corns{}).Where("id = ?", id).Update("enable", enable)
+	return nil
+}
+
+func (c *cronStruct) UpdateCronIdById(id, cronid string) error {
+	c.db.Model(&model.Corns{}).Where("id = ?", id).Update("cron_id", cronid)
 	return nil
 }
 

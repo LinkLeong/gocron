@@ -21,7 +21,7 @@ import (
 	"github.com/labstack/echo/v4"
 )
 
-//获取定时任务列表
+// 获取定时任务列表
 func GetCronList(w http.ResponseWriter, r *http.Request) {
 	// list := service.Service.Cron().GetJobs()
 	// result := model.Result{Code: 200, Msg: "success", Data: list}
@@ -29,7 +29,7 @@ func GetCronList(w http.ResponseWriter, r *http.Request) {
 	//json.NewEncoder(w).Encode(result)
 }
 
-//添加定时任务
+// 添加定时任务
 func PostCronAdd(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	m := model.Corns{}
@@ -55,7 +55,7 @@ func PostCronAdd(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(json.RawMessage(string(`{"code": 200, "msg": " 任务添加成功"}`)))
 }
 
-//删除定时任务
+// 删除定时任务
 func DeleteCronDelete(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	vars := mux.Vars(r)
@@ -117,4 +117,22 @@ func (g *GoCron) DeleteCronJob(ctx echo.Context, id int) error {
 		ctx.JSON(http.StatusInternalServerError, codegen.BadRequest{Message: message})
 	}
 	return nil
+}
+func (g *GoCron) UpdateCronJobStatus(ctx echo.Context, id int) error {
+	m := codegen.CronStatus{}
+	message := "OK"
+	if err := ctx.Bind(&m); err != nil {
+		message = err.Error()
+		return ctx.JSON(http.StatusBadRequest, codegen.BadRequest{Message: message})
+	}
+
+	corn := model.Corns{}
+	corn.Enable = string(m.Enable)
+	corn.Id = id
+	err := service.MyService.Cron().UpdateStatus(strconv.Itoa(id), corn.Enable)
+	if err != nil {
+		message = err.Error()
+		ctx.JSON(http.StatusInternalServerError, codegen.BadRequest{Message: message})
+	}
+	return ctx.JSON(http.StatusOK, codegen.OKRequest{Message: &message})
 }

@@ -90,16 +90,29 @@ func (g *GoCron) GetNotifications(ctx echo.Context) error {
 	list := service.MyService.Notify().GetNotifyList()
 	notifies := []codegen.Notification{}
 	for _, v := range list {
+		aaa := v
 		t := codegen.NotificationType(v.Type)
 		notifies = append(notifies, codegen.Notification{
-			Title:   &v.Title,
-			Content: &v.Content,
-			Url:     &v.Url,
-			Name:    &v.Name,
-			Id:      &v.Id,
+			Title:   &aaa.Title,
+			Content: &aaa.Content,
+			Url:     &aaa.Url,
+			Name:    &aaa.Name,
+			Id:      &aaa.Id,
 			Type:    &t,
 		})
 	}
+	// for i := 0; i < len(list); i++ {
+	// 	aaa := list[i]
+	// 	t := codegen.NotificationType(aaa.Type)
+	// 	notifies = append(notifies, codegen.Notification{
+	// 		Title:   &aaa.Title,
+	// 		Content: &aaa.Content,
+	// 		Url:     &aaa.Url,
+	// 		Name:    &aaa.Name,
+	// 		Id:      &aaa.Id,
+	// 		Type:    &t,
+	// 	})
+	// }
 	return ctx.JSON(http.StatusOK, codegen.GetNotificationsOK{Data: &notifies})
 }
 
